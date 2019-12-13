@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class AlarmActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
+    protected String signal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class AlarmActivity extends AppCompatActivity {
         this.mediaPlayer.start();
 
         findViewById(R.id.btnClose).setOnClickListener(mClickListener);
+        if(signal=="alarmoff")  close();
     }
 
     @Override
@@ -56,4 +58,6 @@ public class AlarmActivity extends AppCompatActivity {
             }
         }
     };
+
+
 }
