@@ -54,12 +54,20 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-//        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
-//            public void onDataReceived(byte[] data, String message) {
-//                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-//                signal=message;
-//            }
-//        });
+        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
+            public void onDataReceived(byte[] data, String message) {
+                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                signal=message;
+
+                if (AlarmActivity.mediaPlayer.isPlaying()) {
+                    AlarmActivity.mediaPlayer.stop();
+                    AlarmActivity.mediaPlayer.release();
+                    AlarmActivity.mediaPlayer = null;
+                }
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() { //연결됐을 때
             public void onDeviceConnected(String name, String address) {

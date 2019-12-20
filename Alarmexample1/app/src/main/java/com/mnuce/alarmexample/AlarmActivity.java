@@ -14,7 +14,7 @@ import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 public class AlarmActivity extends AppCompatActivity {
 
     public static String signal;
-    private MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,12 +22,12 @@ public class AlarmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm);
         signal=null;
         // 알람음 재생
-        this.mediaPlayer = MediaPlayer.create(this, R.raw.song);
-        this.mediaPlayer.start();
+        AlarmActivity.mediaPlayer = MediaPlayer.create(this, R.raw.song);
+        AlarmActivity.mediaPlayer.start();
 
         findViewById(R.id.btnClose).setOnClickListener(mClickListener);
-        MainActivity.listen();
-        if(signal=="alarmoff")  close();
+//        MainActivity.listen();
+//        if(signal=="alarmoff")  close();
     }
 
 
@@ -37,18 +37,18 @@ public class AlarmActivity extends AppCompatActivity {
         super.onDestroy();
 
         // MediaPlayer release
-        if (this.mediaPlayer != null) {
-            this.mediaPlayer.release();
-            this.mediaPlayer = null;
+        if (AlarmActivity.mediaPlayer != null) {
+            AlarmActivity.mediaPlayer.release();
+            AlarmActivity.mediaPlayer = null;
         }
     }
 
     /* 알람 종료 */
-    private void close() {
-        if (this.mediaPlayer.isPlaying()) {
-            this.mediaPlayer.stop();
-            this.mediaPlayer.release();
-            this.mediaPlayer = null;
+    public void close() {
+        if (AlarmActivity.mediaPlayer.isPlaying()) {
+            AlarmActivity.mediaPlayer.stop();
+            AlarmActivity.mediaPlayer.release();
+            AlarmActivity.mediaPlayer = null;
         }
 
         finish();
