@@ -3,21 +3,29 @@ package com.mnuce.bluetoothexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.List;
 
 import app.akexorcist.bluetotohspp.library.BluetoothSPP;
 import app.akexorcist.bluetotohspp.library.BluetoothState;
 import app.akexorcist.bluetotohspp.library.DeviceList;
 
+import static android.os.SystemClock.sleep;
+
 public class MainActivity extends AppCompatActivity {
-
-    private BluetoothSPP bt;
-
+    Data sdata = new Data();
+    protected BluetoothSPP bt;
+    String signal="on";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +41,13 @@ public class MainActivity extends AppCompatActivity {
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //데이터 수신
             public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+
+
+                //Toast.makeText(MainActivity.this, sdata.signal, Toast.LENGTH_SHORT).show();
+
+                sdata.changesignal("alarmoff");
+                getRunActivity();
+                sleep(1000);
             }
         });
 
@@ -64,6 +78,17 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), DeviceList.class);
                     startActivityForResult(intent, BluetoothState.REQUEST_CONNECT_DEVICE);
                 }
+            }
+        });
+
+        Button btnIntent = findViewById(R.id.btnIntent);
+        btnIntent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), SubActivity.class);
+
+//                intent.putExtra("bluetooth",bt);
+                startActivity(intent);
             }
         });
     }
@@ -113,5 +138,13 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    public void getRunActivity() {
+
+                Intent it = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(it);
+
+
     }
 }

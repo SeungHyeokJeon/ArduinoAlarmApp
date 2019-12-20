@@ -30,8 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
 
     private TimePicker timePicker;
-//    BluetoothControll bluetoothControll;
-    protected BluetoothSPP bt;
+    protected static BluetoothSPP bt;
     protected String signal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +54,12 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
 
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
-            public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                signal=message;
-            }
-        });
+//        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
+//            public void onDataReceived(byte[] data, String message) {
+//                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+//                signal=message;
+//            }
+//        });
 
         bt.setBluetoothConnectionListener(new BluetoothSPP.BluetoothConnectionListener() { //연결됐을 때
             public void onDeviceConnected(String name, String address) {
@@ -180,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void listen() {
+    public static void listen() {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
             public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                signal=message;
+                //Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                AlarmActivity.signal=message;
             }
         });
     }
