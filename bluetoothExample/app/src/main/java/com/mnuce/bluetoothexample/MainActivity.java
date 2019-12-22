@@ -44,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                 //Toast.makeText(MainActivity.this, sdata.signal, Toast.LENGTH_SHORT).show();
-
-                sdata.changesignal("alarmoff");
-                getRunActivity();
-                sleep(1000);
+                ((SubActivity)SubActivity.mContext).setSignal("alarmoff");
+//                sdata.setSignal("alarmoff");
             }
         });
 
@@ -140,11 +138,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void getRunActivity() {
-
-                Intent it = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(it);
-
-
-    }
 }
