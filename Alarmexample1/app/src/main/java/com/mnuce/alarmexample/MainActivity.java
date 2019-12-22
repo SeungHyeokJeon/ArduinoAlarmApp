@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private Calendar calendar;
 
     private TimePicker timePicker;
-    protected static BluetoothSPP bt;
-    protected String signal;
+    protected BluetoothSPP bt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,15 +57,7 @@ public class MainActivity extends AppCompatActivity {
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
             public void onDataReceived(byte[] data, String message) {
                 Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                signal=message;
-
-                if (AlarmActivity.mediaPlayer.isPlaying()) {
-                    AlarmActivity.mediaPlayer.stop();
-                    AlarmActivity.mediaPlayer.release();
-                    AlarmActivity.mediaPlayer = null;
-                }
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                ((AlarmActivity)AlarmActivity.mContext).setSignal("alarmoff");
             }
         });
 
@@ -187,15 +179,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void listen() {
-        bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
-            public void onDataReceived(byte[] data, String message) {
-                //Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                AlarmActivity.signal=message;
-            }
-        });
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == BluetoothState.REQUEST_CONNECT_DEVICE) {
@@ -205,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 bt.setupService();
                 bt.startService(BluetoothState.DEVICE_OTHER);
-                listen();
             } else {
                 Toast.makeText(getApplicationContext()
                         , "Bluetooth was not enabled."
