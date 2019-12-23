@@ -1,33 +1,41 @@
-#include <SoftwareSerial.h> //시리얼통신 라이브러리 호출
-int inputPin = 7;     // 센서 신호핀
-int pirState = LOW;   // 센서 초기상태는 움직임이 없음을 가정
-int val = 0;          // 센서 신호의 판별을 위한 변수
- 
-int blueTx=2;   //Tx (보내는핀 설정)at D2
-int blueRx=3;   //Rx (받는핀 설정) D3
-SoftwareSerial bluetooth(blueTx, blueRx);  //시리얼 통신을 위한 객체선언
- 
+#include <SoftwareSerial.h>
+
+int led = 13; //LED 13번 PIN
+int inputPin = 2; // 센서 시그널핀 D2
+int pirState = LOW; // PIR 초기상태
+int val = 0; // Signal 입력값
+
+//블루투스 초기 설정
+SoftwareSerial mySerial(5, 6);  //시리얼 통신을 위한 객체선언
+
 void setup() {
-  Serial.begin(9600);   //시리얼 모니터
-  pinMode(inputPin, INPUT);    // 센서 Input 설정
-  bluetooth.begin(9600); //블루투스 시리얼
+  Serial.begin(9600); // 시리얼 모니터 시작
+  pinMode(led, OUTPUT);
+  pinMode(inputPin, INPUT); // 센서 Input 설정
+  mySerial.begin(9600); //  블루투스 시리얼 시작
 }
 
 void loop() {
-  if (bluetooth.available()) { //블루투스에서 메시지를 전달을 받으면
-    Serial.write(bluetooth.read());  //블루투스 측 내용을 시리얼모니터에 출력 (DEBUG)
+  delay(100);
+  val = digitalRead(inputPin); // 센서값 읽기
 
-    if(bluetooth.read() == "STATUS") {
-         val = digitalRead(inputPin); // 센서 신호값을 읽어와서 val에 저장
-
-         if(val == HIGH) { bluetooth.write("alarmoff");} //인식이 되면, 알람 끄기 신호 전달
-    }
+  if (val == HIGH) { //사람이 감지되면
+    Serial.write("HIGH\n");
+    digitalWrite(led, HIGH); //LED ON
+    mySerial.println("alarmoff"); //alarmoff를 전달.
   }
-  
+
+  if (val == LOW) {
+    digitalWrite(led, LOW); //LED OFF
+  }
+
+  if (mySerial.available()) { //블루투스에서 메시지를 전달을 받으면
+    Serial.write(mySerial.read());  //블루투스 측 내용을 시리얼모니터에 출력 (DEBUG)
+
+
+  }
+
   if (Serial.available()) { //시리얼 모니터 측에서 메시지를 전달 받으면 (DEBUG)
-    bluetooth.write(Serial.read());  //시리얼 모니터 내용을 블루추스 측에 WRITE
+    mySerial.write(Serial.read());  //시리얼 모니터 내용을 블루추스 측에 WRITE
   }
 }
-
-// 블루투스 연동 출처: https://deneb21.tistory.com/267
-// 인체 감지 센서 연동 출처: https://blog.naver.com/PostView.nhn?blogId=eduino&logNo=220892296492
