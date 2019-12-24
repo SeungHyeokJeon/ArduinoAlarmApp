@@ -5,8 +5,10 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -31,16 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
     private TimePicker timePicker;
     protected BluetoothSPP bt;
-
+    public String signal="on";
+    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
 
         this.calendar = Calendar.getInstance();
         // 현재 날짜 표시
         displayDate();
-
         this.timePicker = findViewById(R.id.timePicker);
 
         findViewById(R.id.btnCalendar).setOnClickListener(mClickListener);
@@ -56,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         bt.setOnDataReceivedListener(new BluetoothSPP.OnDataReceivedListener() { //아두이노 데이터 수신
             public void onDataReceived(byte[] data, String message) {
-                Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
-                ((AlarmActivity)AlarmActivity.mContext).setSignal("alarmoff");
+                signal="alarmoff";
             }
         });
 
@@ -100,16 +102,18 @@ public class MainActivity extends AppCompatActivity {
 
     /* DatePickerDialog 호출 */
     private void showDatePicker() {
+
         DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
                 // 알람 날짜 설정
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
                 calendar.set(Calendar.DATE, dayOfMonth);
-
                 // 날짜 표시
                 displayDate();
+
             }
         }, this.calendar.get(Calendar.YEAR), this.calendar.get(Calendar.MONTH), this.calendar.get(Calendar.DAY_OF_MONTH));
 
@@ -196,4 +200,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public String getSignal() { return signal; }
+    public void setSignal (String string) { signal = string; }
 }

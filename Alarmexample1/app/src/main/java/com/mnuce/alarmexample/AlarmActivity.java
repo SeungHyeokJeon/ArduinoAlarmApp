@@ -17,15 +17,14 @@ import static android.os.SystemClock.sleep;
 
 public class AlarmActivity extends AppCompatActivity implements Runnable {
 
-    public String signal;
     public static MediaPlayer mediaPlayer;
-    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        mContext = this;
-        signal="on";
+
+        ((MainActivity)MainActivity.mContext).setSignal("on");
+
         // 알람음 재생
         AlarmActivity.mediaPlayer = MediaPlayer.create(this, R.raw.song);
         AlarmActivity.mediaPlayer.start();
@@ -76,14 +75,11 @@ public class AlarmActivity extends AppCompatActivity implements Runnable {
     @Override
     public void run() {
         while (true) {
-            Log.i("Thread signal", "" + signal);
-            if(signal.equals("alarmoff")) {
+            if(((MainActivity)MainActivity.mContext).getSignal().equals("alarmoff")) {
                 close();
                 break;
             }
             sleep(500);
         }
     }
-
-    public void setSignal (String string) { signal = string; }
 }
